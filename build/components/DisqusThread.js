@@ -10,7 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var DISQUS_CONFIG = ['shortname', 'identifier', 'title', 'url', 'category_id', 'onNewComment'];
+var DISQUS_CONFIG = ['shortname', 'identifier', 'title', 'url', 'category_id', 'onNewComment', 'api_key', 'remote_auth_s3'];
 var __disqusAdded = false;
 
 function copyProps(context, props) {
@@ -82,7 +82,19 @@ module.exports = _react2.default.createClass({
      * JavaScript object with comment `id` and `text`. This allows you to track
      * user comments and replies and run a script after a comment is posted.
      */
-    onNewComment: _react2.default.PropTypes.func
+    onNewComment: _react2.default.PropTypes.func,
+
+    /**
+    * `api_key` tells Disqus service there is a key available for SSO.
+    */
+    api_key: _react2.default.PropTypes.string,
+    /**
+    *
+    * `remote_auth_s3` is needed for Disqus SSO
+    *
+    */
+    remote_auth_s3: _react2.default.PropTypes.string
+
   },
 
   getDefaultProps: function getDefaultProps() {
@@ -92,7 +104,9 @@ module.exports = _react2.default.createClass({
       title: null,
       url: null,
       category_id: null,
-      onNewComment: null
+      onNewComment: null,
+      api_key: null,
+      remote_auth_s3: null
     };
   },
   componentDidMount: function componentDidMount() {
@@ -102,7 +116,7 @@ module.exports = _react2.default.createClass({
     this.loadDisqus();
   },
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.identifier !== this.props.identifier;
+    return nextProps.identifier !== this.props.identifier || nextProps.remote_auth_s3 !== this.props.remote_auth_s3;
   },
   render: function render() {
     var _this = this;
@@ -157,7 +171,6 @@ module.exports = _react2.default.createClass({
         reload: true,
         config: function config() {
           copyProps(this.page, props);
-
           // Disqus needs hashbang URL, see https://help.disqus.com/customer/portal/articles/472107
           this.page.url = this.page.url.replace(/#/, '') + '#!newthread';
         }
