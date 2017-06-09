@@ -1,6 +1,6 @@
 {
   "name": "react-disqus-comments-sso",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "React Disqus thread component with Single Sign-On",
   "main": "build/main.js",
   "scripts": {
