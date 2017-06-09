@@ -10,7 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var DISQUS_CONFIG = ['shortname', 'identifier', 'title', 'url', 'category_id', 'onNewComment', 'api_key', 'remote_auth_s3'];
+var DISQUS_CONFIG = ['shortname', 'identifier', 'title', 'url', 'category_id', 'onNewComment', 'api_key', 'remote_auth_s3', 'targetWindow'];
 var __disqusAdded = false;
 
 function copyProps(context, props) {
@@ -27,6 +27,14 @@ function copyProps(context, props) {
       }];
     };
   }
+}
+
+function isScriptLoaded(url, document) {
+  var scripts = document.getElementsByTagName('script');
+  for (var i = scripts.length; i--;) {
+    if (scripts[i].src == url) return true;
+  }
+  return false;
 }
 
 module.exports = _react2.default.createClass({
@@ -106,7 +114,8 @@ module.exports = _react2.default.createClass({
       category_id: null,
       onNewComment: null,
       api_key: null,
-      remote_auth_s3: null
+      remote_auth_s3: null,
+      targetWindow: null
     };
   },
   componentDidMount: function componentDidMount() {
@@ -126,7 +135,6 @@ module.exports = _react2.default.createClass({
         return config === key;
       }) ? memo : _extends({}, memo, _defineProperty({}, key, _this.props[key]));
     }, {});
-
     return _react2.default.createElement(
       'div',
       props,
@@ -134,12 +142,13 @@ module.exports = _react2.default.createClass({
     );
   },
   addDisqusScript: function addDisqusScript() {
-    if (__disqusAdded) {
+    var targetWindow = this.props.targetWindow || window;
+    if (isScriptLoaded('//' + this.props.shortname + '.disqus.com/embed.js', targetWindow.document)) {
       return;
     }
 
-    var child = this.disqus = document.createElement('script');
-    var parent = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0];
+    var child = this.disqus = targetWindow.document.createElement('script');
+    var parent = targetWindow.document.getElementsByTagName('head')[0] || targetWindow.document.getElementsByTagName('body')[0];
 
     child.async = true;
     child.type = 'text/javascript';
@@ -152,6 +161,7 @@ module.exports = _react2.default.createClass({
     var _this2 = this;
 
     var props = {};
+    var targetWindow = this.props.targetWindow || window;
 
     // Extract Disqus props that were supplied to this component
     DISQUS_CONFIG.forEach(function (prop) {
@@ -162,12 +172,12 @@ module.exports = _react2.default.createClass({
 
     // Always set URL
     if (!props.url || !props.url.length) {
-      props.url = window.location.href;
+      props.url = targetWindow.location.href;
     }
 
     // If Disqus has already been added, reset it
-    if (typeof DISQUS !== 'undefined') {
-      DISQUS.reset({
+    if (typeof targetWindow.DISQUS !== 'undefined') {
+      targetWindow.DISQUS.reset({
         reload: true,
         config: function config() {
           copyProps(this.page, props);
@@ -177,7 +187,7 @@ module.exports = _react2.default.createClass({
       });
     } else {
       // Otherwise add Disqus to the page
-      copyProps(window, props, 'disqus_');
+      copyProps(targetWindow, props, 'disqus_');
       this.addDisqusScript();
     }
   }
