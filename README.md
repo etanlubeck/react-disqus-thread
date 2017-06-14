@@ -1,4 +1,4 @@
-# react-disqus-comments
+# react-disqus-comments-sso
 
 ## This is a fork
 Forked from the popular package by mzabriskie, but with a few fixes.
@@ -32,7 +32,7 @@ var App = createClass({
 				category_id="123456"
 				onNewComment={this.handleNewComment}
 				api_key="PUBLIC KEY"
-				remote_auth_s3=""
+				remote_auth_s3="ACCESS_TOKEN"
 				/>
 		);
 	}
