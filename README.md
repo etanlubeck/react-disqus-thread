@@ -2,7 +2,10 @@
 
 ## This is a fork
 Forked from the popular package by mzabriskie, but with a few fixes.
-Added Single Sign-On support
+Added Single Sign-On support.
+
+Also adds the optional `targetWindow` property to allow disqus to embed
+in windows other than the default.
 
 ## Installing
 
@@ -33,6 +36,7 @@ var App = createClass({
 				onNewComment={this.handleNewComment}
 				api_key="PUBLIC KEY"
 				remote_auth_s3="ACCESS_TOKEN"
+				targetWindow={window} // Optional
 				/>
 		);
 	}
