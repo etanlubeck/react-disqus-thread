@@ -10,7 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var DISQUS_CONFIG = ['shortname', 'identifier', 'title', 'url', 'category_id', 'onNewComment', 'api_key', 'remote_auth_s3', 'targetWindow'];
+var DISQUS_CONFIG = ['shortname', 'identifier', 'title', 'url', 'category_id', 'onNewComment', 'api_key', 'remote_auth_s3', 'targetWindow', 'sso'];
 var __disqusAdded = false;
 
 function copyProps(context, props) {
@@ -22,6 +22,13 @@ function copyProps(context, props) {
 
   if (typeof props.onNewComment === 'function') {
     context[prefix + 'config'] = function config() {
+      if (props['remote_auth_s3']) {
+        this.page.remote_auth_s3 = props['remote_auth_s3'];
+        this.page.api_key = props['api_key'];
+      }
+      if (props['sso']) {
+        this.sso = props['sso'];
+      }
       this.callbacks.onNewComment = [function handleNewComment(comment) {
         props.onNewComment(comment);
       }];
@@ -101,7 +108,12 @@ module.exports = _react2.default.createClass({
     * `remote_auth_s3` is needed for Disqus SSO
     *
     */
-    remote_auth_s3: _react2.default.PropTypes.string
+    remote_auth_s3: _react2.default.PropTypes.string,
+    /**
+     * `sso` is an object with properties for a Disqus sso section
+     *
+     */
+    sso: _react2.default.PropTypes.object
 
   },
 
@@ -115,6 +127,7 @@ module.exports = _react2.default.createClass({
       onNewComment: null,
       api_key: null,
       remote_auth_s3: null,
+      sso: null,
       targetWindow: null
     };
   },
