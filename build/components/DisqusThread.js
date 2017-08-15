@@ -26,6 +26,9 @@ function copyProps(context, props) {
         this.page.remote_auth_s3 = props['remote_auth_s3'];
         this.page.api_key = props['api_key'];
       }
+      if (props['sso']) {
+        this.sso = props['sso'];
+      }
       this.callbacks.onNewComment = [function handleNewComment(comment) {
         props.onNewComment(comment);
       }];
